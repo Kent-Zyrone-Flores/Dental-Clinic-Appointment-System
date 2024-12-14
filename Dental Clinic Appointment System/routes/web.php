@@ -33,7 +33,7 @@ Route::post('user', [AppointmentController::class, 'submit'])->name('user.submit
 // Login form page
 Route::view('/login', 'login')->name('login');
 
-// Handle login submission
+// Handle login submission asa applicatio
 Route::post('/admin', [AuthController::class, 'login'])->name('admin');
 
 // Signup page

@@ -17,20 +17,28 @@
           </a>
         </div>
         <ul>
-          <button><a href="landingpage">Logout</a></button>
+          <button><a href="/">Logout</a></button>
         </ul>
       </div>
     </nav>
   </nav>
+  
+  <center>
+    @if (Auth::check())
+        <h1>Hello, {{ Auth::user()->email }}</h1>
+    @else
+        <h1>Welcome, Guest!</h1>
+    @endif
+</center>
 
-  <div class="container">
-    <div class="content">
-      <h1>Dental World Clinic</h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-    </div>
+
+  <div style="
+    display: flex; flex-direction: row;
+  " class="container">
+     
     <form method="POST" action="{{ route('user.submit') }}">
       @csrf
-      <div class="form-container">
+      <div style="border: solid rgb(182, 181, 181) 1px" class="form-container">
         <h2>Book Appointment</h2>
         <center>
           <form id="appointmentForm">
@@ -67,10 +75,9 @@
         </center>
       </div>
     </form>
-  </div>
+ 
 
-  <center>
-    <div class="booking-container">
+    <div style="margin-left: 10px; border: solid rgb(182, 181, 181) 1px" class="booking-container">
       <h2>Booking Appointments</h2>
       <table class="appointment-table" id="bookingTable">
         <thead>
@@ -103,8 +110,7 @@
         </tbody>
       </table>
     </div>
-  </center>
-
+  </div>
   <script>
     const appointmentForm = document.getElementById('appointmentForm');
     const serviceSelect = document.getElementById('service');

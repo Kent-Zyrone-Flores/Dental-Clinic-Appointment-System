@@ -33,21 +33,37 @@
     <div class="login-form-container">
       <h1>Log In</h1>
       <p>Welcome back! Please log in to your account.</p>
-      <div class="input-field">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="Enter your email" required>
-      </div>
-      <div class="input-field">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="Enter your password" required>
-      </div>
-      <div class="submit-button">
-        <button><a href="{{ route('user') }}">Log in</a></button>
-        <div>
-          <p>Don't have an account? <a href="{{ route('signup') }}">Sign Up</a></p>
-        </div>
-      </div>
-    </div>
+  
+      <!-- Display validation errors -->
+      @if ($errors->any())
+          <div class="alert alert-danger">
+              <ul>
+                  @foreach ($errors->all() as $error)
+                      <li>{{ $error }}</li>
+                  @endforeach
+              </ul>
+          </div>
+      @endif
+  
+      <form action="{{ route('login.submit') }}" method="POST">
+          @csrf
+          <div class="input-field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="Enter your email" value="{{ old('email') }}" required>
+          </div>
+          <div class="input-field">
+              <label for="password">Password</label>
+              <input type="password" id="password" name="password" placeholder="Enter your password" required>
+          </div>
+          <div class="submit-button">
+              <button type="submit">Log in</button>
+          </div>
+          <div>
+              <p>Don't have an account? <a href="{{ route('signup') }}">Sign Up</a></p>
+          </div>
+      </form>
+  </div>
+  
   </form>
 
   <!-- Footer Section -->

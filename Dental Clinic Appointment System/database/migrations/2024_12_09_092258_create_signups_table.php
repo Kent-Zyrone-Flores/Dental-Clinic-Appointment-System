@@ -19,7 +19,7 @@ class CreateSignupsTable extends Migration
             $table->string('last_name')->nullable();
             $table->string('email')->unique();
             $table->string('phone')->nullable();
-            $table->string('password');
+            $table->string('password', 255);
             $table->timestamps();
         });
     }
