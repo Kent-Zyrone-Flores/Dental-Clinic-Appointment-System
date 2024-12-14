@@ -28,11 +28,11 @@
         </a>
       </div>
       <ul>
-        <li><a href="landingpage">Home</a></li>
-        <li><a href="#">Contact Us</a></li>
-        <button><a href="signup">Sign Up</a></button>
-        <button><a href="login">Log In</a></button>
-      </ul>
+        <li><a href="{{ route('landingpage') }}">Home</a></li>
+        <li><a href="#contact-us">Contact Us</a></li>
+        <button><a href="{{ route('signup') }}">Sign Up</a></button>
+        <button><a href="{{ route('login') }}">Log In</a></button>
+    </ul>
     </div>
   </nav>
 

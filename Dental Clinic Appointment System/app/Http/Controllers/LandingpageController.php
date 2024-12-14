@@ -11,6 +11,6 @@ class LandingpageController extends Controller
     public function landingpage()
     {
         // Logic for the landing page
-        return view('landingpage');
+        return view('/');
     }
 }
