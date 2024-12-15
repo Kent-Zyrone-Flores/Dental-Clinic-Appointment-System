@@ -75,7 +75,7 @@
             <a href="{{ route('history') }}" class="nav-link">History</a>
         </div><hr><br><br><br><br><br>
 
-        <div class="logout-btn"><a href="#" class="text-white text-decoration-none">Logout</a></div>
+        <div class="logout-btn"><a href="landingpage" class="text-white text-decoration-none">Logout</a></div>
     </div>
 
     <div class="main-content">

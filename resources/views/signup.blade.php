@@ -28,8 +28,7 @@
         </a>
       </div>
       <ul>
-        <li><a href="landingpage">Home</a></li>
-        <li><a href="#">Contact Us</a></li>
+        <li><a href="/">Home</a></li>
         <button><a href="signup">Sign Up</a></button>
         <button><a href="login">Log In</a></button>
       </ul>
@@ -98,17 +97,3 @@
   </footer>
 </body>
 </html>
-
- <!-- Success message alert -->
- @if(session('success'))
-        <div class="alert alert-success" style="background-color: #4CAF50; color: white; padding: 15px; margin-bottom: 20px;">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <!-- Error message alert -->
-    @if(session('error'))
-        <div class="alert alert-danger" style="background-color: #f44336; color: white; padding: 15px; margin-bottom: 20px;">
-            {{ session('error') }}
-        </div>
-    @endif

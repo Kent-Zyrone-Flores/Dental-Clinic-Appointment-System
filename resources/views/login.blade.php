@@ -29,6 +29,7 @@
         </ul>
       </div>
     </nav>
+
     <!-- Success message alert -->
     @if(session('success'))
         <script>
@@ -42,7 +43,6 @@
             alert("{{ session('error') }}");
         </script>
     @endif
-
     <form method="POST" action="{{ route('login') }}">
         @csrf
         <div class="login-form-container">
@@ -63,7 +63,7 @@
                 </div>
             </div>
         </div>
-    </form> 
+    </form>
 
 
   <!-- Footer Section -->
@@ -89,32 +89,3 @@
 </body>
 
 </html>
-
- <!-- Success message alert -->
- @if(session('success'))
-        <div class="alert alert-success" style="background-color: #4CAF50; color: white; padding: 15px; margin-bottom: 20px;">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <!-- Error message alert -->
-    @if(session('error'))
-        <div class="alert alert-danger" style="background-color: #f44336; color: white; padding: 15px; margin-bottom: 20px;">
-            {{ session('error') }}
-        </div>
-    @endif
- <!-- Success message alert -->
- @if(session('success'))
-        <div class="alert alert-success" style="background-color: #4CAF50; color: white; padding: 15px; margin-bottom: 20px;">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <!-- Error message alert -->
-    @if(session('error'))
-        <div class="alert alert-danger" style="background-color: #f44336; color: white; padding: 15px; margin-bottom: 20px;">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    

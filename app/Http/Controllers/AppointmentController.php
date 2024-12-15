@@ -5,14 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
 
-class AppointmentController extends Controller {
-    public function user() {
-
+class AppointmentController extends Controller
+{
+    public function user()
+    {
         $appointments = Appointment::all();
         return view('user', compact('appointments'));
     }
 
-    public function submit(Request $request) {
+    public function submit(Request $request)
+    {
         $incoming_fields = $request->validate([
             'name' => 'required',
             'phone' => 'required',
@@ -23,23 +25,27 @@ class AppointmentController extends Controller {
             'time' => 'required',
         ]);
 
-        Appointment::create($incoming_fields);
+        // Check for conflicts
+        $existingAppointment = Appointment::where('date', $incoming_fields['date'])
+                                           ->where('time', $incoming_fields['time'])
+                                           ->first();
 
-        return redirect()->route('user');
+        if ($existingAppointment) {
+            return back()->with('error', 'This time slot is already booked. Please choose another.');
+        }
+
+        Appointment::create($incoming_fields);
+        return redirect()->route('user')->with('success', 'Appointment booked successfully!');
     }
 
-    // Show all appointments
     public function index()
-{
-    $appointments = Appointment::all();
-    return view('appointment', compact('appointments'));
-}
+    {
+        $appointments = Appointment::all();
+        return view('appointment', compact('appointments'));
+    }
 
-
-    // Store a new appointment
     public function store(Request $request)
     {
-        // Validate the incoming request
         $request->validate([
             'name' => 'required|string',
             'phone' => 'required|string',
@@ -50,11 +56,19 @@ class AppointmentController extends Controller {
             'time' => 'required|string',
         ]);
 
-        Appointment::create($request->all());
+        // Check for conflicts
+        $existingAppointment = Appointment::where('date', $request->date)
+                                           ->where('time', $request->time)
+                                           ->first();
 
-        return redirect()->route('appointment');
+        if ($existingAppointment) {
+            return response()->json(['success' => false, 'message' => 'This time slot is already booked.'], 409);
+        }
+
+        Appointment::create($request->all());
+        return redirect()->route('appointment')->with('success', 'Appointment created successfully!');
     }
-    
+
     public function updateStatus($id, Request $request)
     {
         $appointment = Appointment::find($id);
@@ -63,30 +77,53 @@ class AppointmentController extends Controller {
             return response()->json(['success' => false, 'message' => 'Appointment not found']);
         }
 
-        // Update the status in the database
         $appointment->status = $request->input('status');
-        $appointment->save();  // Save the updated appointment
+        $appointment->save();
 
         return response()->json(['success' => true]);
     }
 
-    // Method to delete an appointment
-    public function deleteAppointment($id)
+    public function reschedule(Request $request)
     {
-        $appointment = Appointment::find($id);
+        $request->validate([
+            'appointmentId' => 'required|exists:appointments,id',
+            'date' => 'required|date',
+            'time' => 'required|string',
+        ]);
+
+        $appointment = Appointment::find($request->appointmentId);
 
         if (!$appointment) {
             return response()->json(['success' => false, 'message' => 'Appointment not found']);
         }
 
-        // Delete the appointment from the database
-        $appointment->delete();
+        // Check if the new slot is available
+        $isSlotTaken = Appointment::where('date', $request->date)
+                                   ->where('time', $request->time)
+                                   ->exists();
 
-        return response()->json(['success' => true]);
+        if ($isSlotTaken) {
+            return response()->json(['success' => false, 'message' => 'The selected time slot is already booked.']);
+        }
+
+        // Update appointment details
+        $appointment->date = $request->date;
+        $appointment->time = $request->time;
+        $appointment->status = 'Rescheduled';
+        $appointment->save();
+
+        return response()->json(['success' => true, 'message' => 'Appointment rescheduled successfully!']);
+    }
+
+    public function destroy($id)
+    {
+        $appointment = Appointment::find($id);
+
+        if (!$appointment) {
+            return redirect()->route('appointments.index')->with('error', 'Appointment not found.');
+        }
+
+        $appointment->delete();
+        return redirect()->route('appointments.index')->with('success', 'Appointment deleted successfully.');
     }
 }
-
-
-
-
-

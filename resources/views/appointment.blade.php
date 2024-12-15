@@ -1,4 +1,3 @@
-<!-- resources/views/appointments/index.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,6 +53,45 @@
         .search-button {
             margin-left: 10px;
         }
+        /* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.4); /* Background color */
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+}
+
+.close-button {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    float: right;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
     </style>
 </head>
 <body>
@@ -121,12 +159,13 @@
                             
                             <td class="status-column">
     <select class="status-dropdown" data-id="{{ $appointment->id }}">
-        <option value="Pending" {{ $appointment->status == 'Pending' ? 'selected' : '' }}>Pending</option>
-        <option value="Confirmed" {{ $appointment->status == 'Confirmed' ? 'selected' : '' }}>Confirmed</option>
-        <option value="Rescheduled" {{ $appointment->status == 'Rescheduled' ? 'selected' : '' }}>Rescheduled</option>
+        <option value="Canceled" {{ $appointment->status == 'Cancel' ? 'selected' : '' }}>Cancel</option>
+        <option value="Confirmed" {{ $appointment->status == 'Confirm' ? 'selected' : '' }}>Confirm</option>
     </select>
-    <a href="#" class="btn btn-danger btn-sm delete-btn" data-id="{{ $appointment->id }}">Delete</a>
-</td>
+
+<button class="btn btn-primary btn-sm reschedule-btn" data-id="{{ $appointment->id }}" data-name="{{ $appointment->name }}" data-date="{{ $appointment->date }}" data-time="{{ $appointment->time }}">
+                                Reschedule
+                            </button>
 
                         </tr>
                     @endforeach
@@ -136,6 +175,102 @@
     </div>
 </body>
 </html>
+<!-- Reschedule Modal -->
+<center>
+<div id="rescheduleModal" class="modal">
+    <div class="modal-content">
+        <button class="close-button" id="closeRescheduleModal">&times;</button>
+        <h3>Reschedule Appointment</h3>
+        <br>
+        <form id="rescheduleForm">
+            @csrf
+            <input type="hidden" id="appointmentId" name="appointmentId">
+            <label for="rescheduleName">Name</label>
+            <input type="text" id="rescheduleName" name="name" readonly>
+<br><br>
+            <label for="rescheduleDate">New Date</label>
+            <input type="date" id="rescheduleDate" name="date" required>
+<br><br>
+            <label for="rescheduleTime">New Time</label>
+            <select id="rescheduleTime" name="time" required>
+                <option value="8:00 AM">8:00 AM</option>
+                <option value="12:00 PM">12:00 PM</option>
+                <option value="3:00 PM">3:00 PM</option>
+                <option value="6:00 PM">6:00 PM</option>
+            </select>
+            <br><br>
+            <button type="submit" class="btn btn-success">Save Changes</button>
+            <button type="button" class="btn btn-danger" id="cancelRescheduleBtn">Cancel</button>
+        </form>
+    </div>
+</div>
+ </center>
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+    // Reschedule Modal Elements
+    const rescheduleModal = document.getElementById('rescheduleModal');
+    const closeModalButton = document.getElementById('closeRescheduleModal');
+    const rescheduleForm = document.getElementById('rescheduleForm');
+    const cancelRescheduleBtn = document.getElementById('cancelRescheduleBtn');
+
+    // Open Reschedule Modal
+    document.querySelectorAll('.reschedule-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const appointmentId = this.dataset.id;
+            const name = this.dataset.name;
+            const date = this.dataset.date;
+            const time = this.dataset.time;
+
+            // Set form data
+            document.getElementById('appointmentId').value = appointmentId;
+            document.getElementById('rescheduleName').value = name;
+            document.getElementById('rescheduleDate').value = date;
+            document.getElementById('rescheduleTime').value = time;
+
+            // Open the modal
+            rescheduleModal.style.display = 'block';
+        });
+    });
+
+    // Close Modal (Close Button)
+    closeModalButton.addEventListener('click', () => {
+        rescheduleModal.style.display = 'none';
+    });
+
+    // Close Modal (Cancel Button)
+    cancelRescheduleBtn.addEventListener('click', () => {
+        rescheduleModal.style.display = 'none';
+    });
+
+    // Submit Reschedule Form via AJAX
+    rescheduleForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(rescheduleForm);
+
+        fetch("{{ route('appointments.reschedule') }}", {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while rescheduling.');
+        });
+    });
+});
+
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Event listener for changing status via dropdown

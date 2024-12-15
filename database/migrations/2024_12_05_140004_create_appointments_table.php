@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('service');
             $table->string('amount');
             $table->date('date');
-            $table->time('time');
+            $table->string('time');
             $table->string('status')->default('Pending');
             $table->timestamps();
         });

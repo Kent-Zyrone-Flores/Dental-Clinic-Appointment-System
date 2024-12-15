@@ -81,6 +81,8 @@ body {
     padding: 15px;
     border-radius: 5px;
     border: 1px solid #ddd;
+    max-height: 665px; 
+    overflow-y: auto; 
 }
 
 .appointment-controls {

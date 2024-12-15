@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Signup;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -18,7 +18,7 @@ class LoginController extends Controller {
         ]);
     
         // Check if the email exists in the database
-        $user = Signup::where('email', $incoming_fields['email'])->first();
+        $user = User::where('email', $incoming_fields['email'])->first();
     
         if (!$user || !Hash::check($incoming_fields['password'], $user->password)) {
             return back()->with('error', 'Invalid email or password.');
