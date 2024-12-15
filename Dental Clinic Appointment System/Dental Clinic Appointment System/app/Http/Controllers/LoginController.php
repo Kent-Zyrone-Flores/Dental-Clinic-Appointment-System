@@ -3,31 +3,49 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Signup;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
-class LoginController extends Controller {
-    public function login() {
-        return view('login'); // Return your login form view
+class LoginController extends Controller
+{
+    /**
+     * Show the login view.
+     */
+    public function login()
+    {
+        return view('login'); // Render the login view
     }
 
-    public function submit(Request $request) {
-        // Validate login input
+    /**
+     * Handle login form submission.
+     */
+    public function submit(Request $request)
+    {
+        // Validate incoming request
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        // Check if the user exists
-        $user = Signup::where('email', $credentials['email'])->first();
+        // Attempt to log in the user using the default 'web' guard
+        if (Auth::guard('web')->attempt($credentials)) {
+            // Regenerate session to prevent session fixation attacks
+            $request->session()->regenerate();
 
-        if (!$user || !Hash::check($credentials['password'], $user->password)) {
-            // Redirect back with an error message if authentication fails
-            return back()->withErrors(['email' => 'Invalid email or password.'])->withInput();
+            $user = Auth::guard('web')->user(); // Retrieve authenticated user
+
+            // Redirect based on user role
+            if ($user->is_admin == 1) {
+                // If the user is an admin, redirect to the dashboard
+                return redirect()->route('dashboard')->with('success', 'Welcome, Admin!');
+            } else {
+                // If the user is not an admin, redirect to the user page
+                return redirect()->route('user')->with('success', 'Welcome back!');
+            }
         }
 
-        // Store user in session (if applicable) and redirect to user page
-        session(['user_id' => $user->id]); // Example session storage
-        return redirect()->route('user')->with('success', 'Logged in successfully!');
+        // Authentication failed
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email'); // Retain the email input
     }
 }

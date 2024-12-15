@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Signup;
 use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class SignupController extends Controller {
@@ -25,9 +26,9 @@ class SignupController extends Controller {
         $incoming_fields['password'] = Hash::make($incoming_fields['password']);
 
         // Save the user to the database
-        Signup::create($incoming_fields);
+        User::create($incoming_fields);
 
         // Redirect to login with success message
-        return redirect()->route('login')->with('success', 'Account created successfully. Please log in.');
+        return redirect()->route('signup')->with('success', 'Account created successfully. Please log in.');
     }
 }

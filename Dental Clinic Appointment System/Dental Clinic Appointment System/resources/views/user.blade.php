@@ -17,7 +17,10 @@
           </a>
         </div>
         <ul>
-          <button><a href="/">Logout</a></button>
+          <form action="{{ route('logout') }}" method="POST" class="logout-form">
+            @csrf
+            <button type="submit" class="logout-btn text-white text-decoration-none">Logout</button>
+        </form>
         </ul>
       </div>
     </nav>
@@ -33,7 +36,7 @@
 
 
   <div style="
-    display: flex; flex-direction: row;
+    display: flex; flex-direction: row; 
   " class="container">
      
     <form method="POST" action="{{ route('user.submit') }}">
@@ -110,6 +113,9 @@
         </tbody>
       </table>
     </div>
+
+
+    
   </div>
   <script>
     const appointmentForm = document.getElementById('appointmentForm');
