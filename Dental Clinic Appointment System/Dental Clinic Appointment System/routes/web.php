@@ -45,3 +45,23 @@ Route::middleware('auth')->group(function () {
     Route::post('/store-report', [StoreController::class, 'storeReport']);
     Route::get('/history', [HistoryController::class, 'index'])->name('history');
 });
+
+// Protected Routes for Authenticated Users
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    
+    // User-specific Routes
+    Route::get('user', [AppointmentController::class, 'user'])->name('user');
+    Route::post('user', [AppointmentController::class, 'submit'])->name('user.submit');
+    
+    Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments');
+    Route::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
+    Route::post('/appointments/update-status/{id}', [AppointmentController::class, 'updateStatus'])->name('appointments.updateStatus');
+    
+    // Admin-specific Routes
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
+    Route::get('/store-report', [StoreController::class, 'storeReport'])->name('store_report');
+    Route::post('/store-report', [StoreController::class, 'storeReport']);
+    Route::get('/history', [HistoryController::class, 'index'])->name('history');
+});
