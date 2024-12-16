@@ -53,7 +53,6 @@
         .search-button {
             margin-left: 10px;
         }
-        /* Style for the action buttons */
         .action-buttons button {
             margin-right: 10px;
         }
@@ -65,11 +64,13 @@
         <div class="profile-section">
             <img src="https://via.placeholder.com/80?text=Photo" alt="Profile Photo" class="profile-photo">
             <div class="name">Admin Name</div>
-            <div class="email"> @if (Auth::check())
-                <p>Hello, {{ Auth::user()->email }}</p>
-            @else
-                <p>Welcome, Guest!</p>
-            @endif</div>
+            <div class="email"> 
+                @if (Auth::check())
+                    <p>Hello, {{ Auth::user()->email }}</p>
+                @else
+                    <p>Welcome, Guest!</p>
+                @endif
+            </div>
         </div><hr>
 
         <div class="nav-links">
@@ -84,49 +85,57 @@
                 <button type="submit" class="logout-btn text-white text-decoration-none">Logout</button>
             </form>  
         </div>
-        
     </div>
 
     <div class="main-content">
-        <h1>History</h1>
+        <h1>Generated Reports</h1>
 
+        <!-- Search Form -->
         <div class="search-container">
-            <input type="text" class="form-control search-bar" placeholder="Search report...">
-            <button class="btn btn-success search-button">Search</button>
+            <form method="GET" action="{{ route('store_report') }}" class="d-flex">
+                <input type="text" name="search" class="form-control search-bar" placeholder="Search report..." value="{{ request()->input('search') }}">
+                <button type="submit" class="btn btn-success search-button">Search</button>
+            </form>
         </div>
 
         <!-- Control buttons for Create, Update, Delete, and Print -->
         <div class="control-buttons">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createReportModal">Create</button>
-            <button class="btn btn-warning" onclick="updateReport()">Update</button>
-            <button class="btn btn-danger" onclick="deleteReport()">Delete</button>
-            <button class="btn btn-info" onclick="printReport()">Print</button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createReportModal">Create Report</button>
+            <button class="btn btn-warning" onclick="updateReport()">Update Report</button>
+            <button class="btn btn-danger" onclick="deleteReport()">Delete Report</button>
+            <button class="btn btn-info" onclick="printReport()">Print Report</button>
         </div>
 
-        <div class="history-table">
-            <h4>Report List</h4>
-            <table class="table table-bordered">
+        <!-- Appointment Table -->
+        <div class="container">
+            <h1>Appointment Reports</h1>
+            <table class="table history-table">
                 <thead>
                     <tr>
-                        <th>Report ID</th>
-                        <th>Title</th>
+                        <th>Appointment ID</th>
+                        <th>Patient Name</th>
+                        <th>Phone Number</th>
+                        <th>Address</th>
+                        <th>Service</th>
+                        <th>Amount</th>
                         <th>Date</th>
+                        <th>Time</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($reports as $report)
-                        <tr>
-                            <td>{{ $report->id }}</td>
-                            <td>{{ $report->title }}</td>
-                            <td>{{ $report->date }}</td>
-                            <td>{{ $report->status }}</td>
-                            <td class="action-buttons">
-                                <!-- Action Buttons for each report -->
-                                <button class="btn btn-primary btn-sm">Edit</button>
-                                <button class="btn btn-danger btn-sm">Delete</button>
-                            </td>
-                        </tr>
+                    @foreach ($appointments as $appointment)
+                    <tr>
+                        <td>{{ $appointment->id }}</td>
+                        <td>{{ $appointment->name }}</td>
+                        <td>{{ $appointment->phone_number }}</td>
+                        <td>{{ $appointment->address }}</td>
+                        <td>{{ $appointment->service }}</td>
+                        <td>{{ $appointment->amount }}</td>
+                        <td>{{ $appointment->date }}</td>
+                        <td>{{ $appointment->time }}</td>
+                        <td>{{ $appointment->status }}</td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -145,8 +154,12 @@
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="title" class="form-label">Report Title</label>
-                            <input type="text" class="form-control" id="title" name="title" required>
+                            <label for="name" class="form-label">Patient Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="service" class="form-label">Service</label>
+                            <input type="text" class="form-control" id="service" name="service" required>
                         </div>
                         <div class="mb-3">
                             <label for="status" class="form-label">Status</label>
@@ -159,6 +172,10 @@
                         <div class="mb-3">
                             <label for="date" class="form-label">Date</label>
                             <input type="date" class="form-control" id="date" name="date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="revenue" class="form-label">Revenue</label>
+                            <input type="text" class="form-control" id="revenue" name="revenue" required>
                         </div>
                     </div>
                     <div class="modal-footer">

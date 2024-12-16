@@ -37,26 +37,27 @@
         </div> 
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <h1>Welcome to the Dental World</h1>
 
         <!-- Revenue List and Calendar Section -->
-        <div class="row mb-4">
-            <!-- Revenue List -->
+        <div class="row">
+            <!-- Revenue List (Left Column) -->
             <div class="col-md-6">
                 <h4>Revenue List</h4>
                 <div class="revenue-list">
                     <ul>
-                        <li>Revenue 1: 1000</li>
-                        <li>Revenue 2: 1200</li>
-                        <li>Revenue 3: 1500</li>
-                        <li>Revenue 4: 900</li>
+
+                    <li>50,000</li>
+                        @foreach($revenues as $revenue)
+                            <li>Revenue: ₱{{ $revenue->amount }}</li>
+                            <td>{{ $appointment->amount }}</td>
+                        @endforeach
                     </ul>
                 </div>
             </div>
 
-            <!-- Calendar -->
+            <!-- Calendar (Right Column) -->
             <div class="col-md-6">
                 <div class="calendar">
                     <h4>Calendar</h4>
@@ -137,24 +138,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>001</td>
-                        <td>John Doe</td>
-                        <td>34</td>
-                        <td>(123) 456-7890</td>
-                    </tr>
-                    <tr>
-                        <td>002</td>
-                        <td>Jane Smith</td>
-                        <td>28</td>
-                        <td>(987) 654-3210</td>
-                    </tr>
+                    <!-- Loop through the appointments data passed from the controller -->
+                    @foreach($appointments as $appointment)
+                        <tr>
+                            <td>{{ $appointment->id }}</td>
+                            <td>{{ $appointment->name }}</td> <!-- Ensure patient name is displayed -->
+                            <td>{{ $appointment->phone_number }}</td>
+                            <td>{{ $appointment->address }}</td>
+                            <td>{{ $appointment->service }}</td>
+                            <td>{{ $appointment->date }}</td>
+                            <td>{{ $appointment->time }}</td>
+                            <td>{{ $appointment->status }}</td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- JavaScript to highlight the current date -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const today = new Date();
@@ -168,5 +169,6 @@
             });
         });
     </script>
+
 </body>
 </html>
