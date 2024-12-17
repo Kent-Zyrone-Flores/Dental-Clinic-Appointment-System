@@ -28,8 +28,7 @@
         </a>
       </div>
       <ul>
-        <li><a href="/">Home</a></li>
-        <button><a href="signup">Sign Up</a></button>
+        <li><a href="/landingpage">Home</a></li>
         <button><a href="login">Log In</a></button>
       </ul>
     </div>

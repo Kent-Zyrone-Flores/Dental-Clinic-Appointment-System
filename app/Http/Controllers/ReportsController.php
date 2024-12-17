@@ -10,12 +10,15 @@ class ReportsController extends Controller
     // Display reports and handle search if a query is provided
     public function index(Request $request)
     {
-        // Optional search logic
         $query = $request->input('search');
-        $reports = Reports::where('title', 'status', 'date',)->get();
-
-        return view('reports', compact('reports'));
+        $reports = Reports::where('title', 'LIKE', "%$query%")
+                          ->orWhere('status', 'LIKE', "%$query%")
+                          ->orWhere('date', 'LIKE', "%$query%")
+                          ->get();
+    
+        return view('reports', ['appointments' => $reports]); // Pass 'appointments' to the view
     }
+    
 
     // Store new report
     public function store(Request $request)

@@ -1,4 +1,3 @@
-@ -0,0 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,28 +6,95 @@
     <link rel="stylesheet" href="css/appointment.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <title>Dashboard</title>
-    
+    <style>
+        .nav-links a:hover {
+            background-color: #575757;
+        }
+        .logout-btn {
+            background-color: green;
+            text-align: center;
+            padding: 10px 0;
+            border-radius: 5px;
+        }
+        .logout-btn a {
+            color: white;
+            text-decoration: none;
+        }
+        .logout-btn:hover {
+            background-color: darkgreen;
+        }
+        .main-content {
+            margin-left: 260px;
+            padding: 20px;
+        }
+        .history-table {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .control-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+        .control-buttons button {
+            margin-left: 10px;
+        }
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+        .search-bar {
+            width: 300px;
+            margin-right: 10px;
+        }
+        .search-button {
+            margin-left: 10px;
+        }
+        .logout-btn {
+            margin-top: 20px;
+        }
+        .revenue-list ul {
+            list-style: none;
+            padding: 0;
+        }
+        .revenue-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .calendar table {
+            width: 100%;
+            text-align: center;
+        }
+        .calendar td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        .calendar .today {
+            background-color: #ffeb3b; /* Highlight today's date */
+        }
+    </style>
 </head>
 <body>
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <!-- Profile Section -->
         <div class="profile-section">
             <img src="https://via.placeholder.com/80?text=Photo" alt="Profile Photo" class="profile-photo">
             <div class="name">Admin Name</div>
             <div class="email">admin@example.com</div>
         </div><hr>
 
-        <!-- Navigation Links -->
         <div class="nav-links">
             <a href="{{ route('dashboard') }}" class="nav-link">Dashboard</a>
             <a href="{{ route('appointments') }}" class="nav-link">Appointments</a>
             <a href="{{ route('reports') }}" class="nav-link">Reports</a>
             <a href="{{ route('history') }}" class="nav-link">History</a>
+            
         </div><hr><br><br><br><br><br>
 
-        
         <div class="logout-btn"><a href="landingpage" class="text-white text-decoration-none">Logout</a></div>
     </div>
 
@@ -37,18 +103,23 @@
         <h1>Welcome to the Dental World</h1>
 
         <!-- Revenue List and Calendar Section -->
-        <div class="row mb-4">
-            <!-- Revenue List -->
+        <div class="row">
+            <!-- Revenue List (Left Column) -->
             <div class="col-md-6">
                 <h4>Revenue List</h4>
                 <div class="revenue-list">
                     <ul>
-                        <li>Revenue 1: 1000</li>
+
+                    <li>50,000</li>
+                        @foreach($revenues as $revenue)
+                            <li>Revenue: ₱{{ $revenue->amount }}</li>
+                            <td>{{ $appointment->amount }}</td>
+                        @endforeach
                     </ul>
                 </div>
             </div>
 
-            <!-- Calendar -->
+            <!-- Calendar (Right Column) -->
             <div class="col-md-6">
                 <div class="calendar">
                     <h4>Calendar</h4>
@@ -129,24 +200,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>001</td>
-                        <td>John Doe</td>
-                        <td>34</td>
-                        <td>(123) 456-7890</td>
-                    </tr>
-                    <tr>
-                        <td>002</td>
-                        <td>Jane Smith</td>
-                        <td>28</td>
-                        <td>(987) 654-3210</td>
-                    </tr>
+                    <!-- Loop through the appointments data passed from the controller -->
+                    @foreach($appointments as $appointment)
+                        <tr>
+                            <td>{{ $appointment->id }}</td>
+                            <td>{{ $appointment->name }}</td> <!-- Ensure patient name is displayed -->
+                            <td>{{ $appointment->phone_number }}</td>
+                            <td>{{ $appointment->address }}</td>
+                            <td>{{ $appointment->service }}</td>
+                            <td>{{ \Carbon\Carbon::parse($appointment->date)->format('F j, Y') }}</td>
+                            <td>{{ $appointment->time }}</td>
+                            <td>{{ $appointment->status }}</td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- JavaScript to highlight the current date -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const today = new Date();
@@ -160,5 +231,6 @@
             });
         });
     </script>
+
 </body>
 </html>

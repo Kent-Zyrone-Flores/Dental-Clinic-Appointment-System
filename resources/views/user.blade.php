@@ -56,7 +56,10 @@
           </a>
         </div>
         <ul>
-          <button><a href="/landingpage">Logout</a></button>
+        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+            @csrf
+            <button type="submit">Logout</button>
+        </form>
         </ul>
       </div>
     </nav>
@@ -130,7 +133,7 @@
             <th>Date</th>
             <th>Time</th>
             <th>Status</th>
-            <th>Cancel</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -141,7 +144,7 @@
               <td>{{ $appointment->address }}</td>
               <td>{{ $appointment->service }}</td>
               <td>{{ $appointment->amount }}</td>
-              <td>{{ $appointment->date }}</td>
+              <td>{{ \Carbon\Carbon::parse($appointment->date)->format('F j, Y') }}</td>
               <td>{{ $appointment->time }}</td>
               <td>{{ $appointment->status }}</td>
               <td><button class="cancel-button" onclick="removeRow(this)">Cancel</button></td>
@@ -154,16 +157,41 @@
 
   <!-- Modal for Receipt -->
   <div id="receiptModal" class="modal">
-    <div class="modal-content">
-      <button class="close-button" id="closeModal">&times;</button>
-      <h3>Booking Successful</h3>
-      <p id="receiptDetails"></p>
-      <br><br><center>
-      <canvas id="qrCodeCanvas"></canvas>
-      </center>
-      <button id="dismissModal" style="margin-top: 15px;">Close</button>
-    </div>
+  <div class="modal-content">
+    <button class="close-button" id="closeModal">&times;</button>
+    <h3>Booking Successful</h3>
+    <p id="receiptDetails"></p>
+    <canvas id="qrCodeCanvas"></canvas>
+    <br>
+    <button id="printPdfButton" style="margin-top: 15px;">Print PDF</button>
+    <button id="dismissModal" style="margin-top: 15px;">Close</button>
   </div>
+</div>
+
+<!-- Include jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+<script>
+  const printPdfButton = document.getElementById('printPdfButton');
+
+  printPdfButton.addEventListener('click', function () {
+    const { jsPDF } = window.jspdf; // Access jsPDF from the global window object
+    const pdf = new jsPDF();
+
+    // Add receipt details to the PDF
+    const details = receiptDetails.innerHTML.replace(/<br>/g, '\n').replace(/<strong>/g, '').replace(/<\/strong>/g, '');
+    pdf.text(details, 10, 10);
+
+    // Convert the QR code canvas to an image and add it to the PDF
+    const qrCanvas = document.getElementById('qrCodeCanvas');
+    const qrImage = qrCanvas.toDataURL('image/png');
+    pdf.addImage(qrImage, 'PNG', 10, 50, 50, 50);
+
+    // Save or open the PDF
+    pdf.save('receipt.pdf');
+  });
+</script>
+
 
   <!-- Include QRCode.js -->
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>

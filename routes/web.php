@@ -12,12 +12,13 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\AuthController;
 
 // Public Routes (Accessible to Guests)
+// Public Routes (Accessible to Guests)
 Route::middleware('guest')->group(function () {
-    Route::get('/', function () { 
+    Route::get('/landingpage', function () { 
         return view('landingpage'); 
-    });
+    })->name('landingpage');
     
-    Route::post('/', [LandingpageController::class, 'landingpage'])->name('landingpage');
+    Route::post('/landingpage', [LandingpageController::class, 'landingpage']);
 
     Route::get('signup', [SignupController::class, 'signup'])->name('signup');
     Route::post('signup', [SignupController::class, 'save'])->name('signup.save');
@@ -29,22 +30,21 @@ Route::middleware('guest')->group(function () {
 // Protected Routes for Authenticated Users
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    
-    // User-specific Routes
+
     Route::get('user', [AppointmentController::class, 'user'])->name('user');
     Route::post('user', [AppointmentController::class, 'submit'])->name('user.submit');
     
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments');
     Route::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
     Route::post('/appointments/update-status/{id}', [AppointmentController::class, 'updateStatus'])->name('appointments.updateStatus');
-    
-    // Admin-specific Routes
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
     Route::get('/store-report', [ReportsController::class, 'storeReport'])->name('store_report');
     Route::post('/store-report', [ReportsController::class, 'storeReport']);
     Route::get('/history', [HistoryController::class, 'index'])->name('history');
 });
+
 
 Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments');
 Route::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');

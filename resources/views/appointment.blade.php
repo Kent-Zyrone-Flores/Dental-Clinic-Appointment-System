@@ -153,7 +153,7 @@
                             <td>{{ $appointment->address }}</td>
                             <td>{{ $appointment->service }}</td>
                             <td>{{ $appointment->amount }}</td>
-                            <td>{{ $appointment->date }}</td>
+                            <td>{{ \Carbon\Carbon::parse($appointment->date)->format('F j, Y') }}</td>
                             <td>{{ $appointment->time }}</td>
                             <td>{{ $appointment->status }}</td>
                             
